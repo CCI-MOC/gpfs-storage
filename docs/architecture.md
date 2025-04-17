@@ -2,7 +2,7 @@
 
 For testing purposes, we are using 3 nodes with 4 H100 GPUs each.
 
-![](docs/diagrams/baremetal-testing-1-diagram.png)
+![](diagrams/baremetal-testing-1-diagram.png)
 
 There are two mechanisms for accessing GPFS systems.
 
