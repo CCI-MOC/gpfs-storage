@@ -1,0 +1,85 @@
+---
+- hosts: h100_storage_compute
+
+  tasks:
+
+  - name: Configure Hosts
+    become: yes
+    become_method: sudo
+    template:
+      src: files/hosts
+      dest: /etc/hosts
+
+  - name: Ensures .ssh dir exists
+    file:
+      path: /home/h100tester/.ssh/
+      state: directory
+      owner: h100tester
+      mode: "700"
+
+  - name: Ensures .ssh dir exists
+    file:
+      path: /root/.ssh/
+      state: directory
+      owner: root
+      mode: "700"
+    become: yes
+    become_method: sudo
+
+  - name: Set up passwordless sudo
+    become: yes
+    become_method: sudo
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      search_string: '%wheel'
+      line: '%wheel        ALL=(ALL)       NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+
+  - name: Create ssh keypairs
+    community.crypto.openssh_keypair:
+      path: /home/h100tester/.ssh/id_rsa
+
+#  - name: Fetch ssh public keys from nodes
+#    fetch:
+#      src: /home/h100tester/.ssh/id_rsa.pub
+#      flat: yes
+#      dest: "/tmp/{{ inventory_hostname }}.pub"
+#
+#  - name: Merge ssh public keys from nodes
+#    run_once: yes
+#    delegate_to: localhost
+#    shell: "cat /tmp/{{ item }}.pub >> /Users/knikolla/Code/gpfs-storage-testing/playbooks/files/authorized_keys"
+#    with_items: "{{ groups['h100_storage_compute'] }}"
+
+  - name: Set up authorized keys
+    template:
+      src: files/authorized_keys
+      dest: /home/h100tester/.ssh/authorized_keys
+      owner: h100tester
+      mode: "600"
+
+  - name: Set up authorized keys
+    template:
+      src: files/authorized_keys
+      dest: /root/.ssh/authorized_keys
+      owner: root
+      mode: "600"
+    become: yes
+    become_method: sudo
+
+  - name: Set hostname
+    become: yes
+    become_method: sudo
+    ansible.builtin.hostname:
+      name: "{{ vars['desired_hostname'] }}"
+
+  - name: Set scale network
+    become: yes
+    become_method: sudo
+    nmcli:
+      state: present
+      conn_name: eno7np0
+      ifname: eno7np0
+      ip4: "{{ vars['scale_ip'] }}/20"
+      method4: manual

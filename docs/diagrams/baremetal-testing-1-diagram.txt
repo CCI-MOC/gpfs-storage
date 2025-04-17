@@ -1,0 +1,41 @@
+@startuml
+
+<style>
+nwdiagDiagram {
+    arrow {
+        FontColor #red
+        FontSize 16
+    }
+}
+</style>
+
+nwdiag {
+    group clients {
+        color = "#FFAAAA";
+        description = "H100 GPFS Clients"
+
+        gpfs-client-01;
+        gpfs-client-02;
+        gpfs-client-03;
+    }
+
+    network nat {
+        address = "172.16.96.0/24"
+
+        gpfs-client-01 [address="172.16.96.24", shape="node", description="h100tester@gpfs-client-01"]
+        gpfs-client-02 [address="172.16.96.25", shape="node"]
+        gpfs-client-03 [address="172.16.96.26", shape="node"]
+    }
+
+    network scale {
+        address = "10.7.1.0/20"
+
+        gpfs-client-01 [address = "10.7.1.24"]
+        gpfs-client-02 [address = "10.7.1.25"]
+        gpfs-client-03 [address = "10.7.1.26"]
+
+        gpfs-system [shape="cloud"]
+    }
+}
+
+@enduml

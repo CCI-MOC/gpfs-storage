@@ -1,0 +1,25 @@
+---
+- hosts: h100_storage_compute
+
+  tasks:
+
+#   - name: Copy Mellanox Driver
+#     unarchive:
+#       src: files/MLNX_OFED_LINUX-24.10-2.1.8.0-rhel9.5-x86_64.tgz
+#       dest: /home/h100tester
+
+  - name: Install dependencies
+    package: name={{ item }} state=present
+    with_items:
+      - perl-File-Find
+      - perl-File-Copy
+      - perl-File-Compare
+      - tk
+      - lsof
+    become: yes
+    become_method: sudod
+
+  - name: Copy `ib_mon.py` script.
+    copy:
+      src: files/ib_mon.py
+      dest: /home/h100tester/ib_mon.py

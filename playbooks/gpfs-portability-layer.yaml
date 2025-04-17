@@ -1,0 +1,45 @@
+---
+- hosts: h100_storage_compute
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: Install dependencies
+    package: name={{ item }} state=present
+    with_items:
+    - kernel-devel
+    - kernel-headers
+    - gcc-c++
+    - rpm-build
+
+  - name: Get kernel version
+    shell: uname -r
+    register: kernel_version
+    changed_when: False
+
+  - name: Check version of kernel
+    shell: rpm -q kernel-headers
+    register: kernel_headers_version
+    changed_when: False
+
+  - name: Check kernel and headers version match
+    fail:
+      msg: >
+        The loaded kernel version doesn't match installed kernel headers.
+        It may be necessary to update the kernel and kernel-headers and restart.
+    when: "kernel_version.stdout not in kernel_headers_version.stdout"
+    changed_when: False
+
+  - name: Check installed version of gpfs
+    shell: "rpm -qa | grep gpfs.gplbin.`uname -r`"
+    register: installed_gpl
+    changed_when: installed_gpl.rc == 1
+    ignore_errors: True
+
+  - name: Build GPFS Portability Layer
+    shell: "/usr/lpp/mmfs/bin/mmbuildgpl --build-package"
+    when: installed_gpl.changed
+
+  - name: Install GPFS RPM
+    shell: "echo dnf localinstall /root/rpmbuild/RPMS/x86_64/gpfs.gplbin-`uname -r`*"
+    when: installed_gpl.changed

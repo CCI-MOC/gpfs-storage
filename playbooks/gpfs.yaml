@@ -1,0 +1,14 @@
+---
+- hosts: h100_storage_compute
+
+  tasks:
+
+  # The profile file loads the environment variables into
+  # PATH and LD_LIBRARY_PATH
+  - name: Set up profile
+    template:
+      src: files/gpfs.sh
+      dest: /etc/profile.d/gpfs.sh
+    become: yes
+    become_method: sudo
+
