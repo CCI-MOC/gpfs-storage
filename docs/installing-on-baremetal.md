@@ -131,6 +131,16 @@ mmshutdown -a
 
 ```
 
+### Restarting GPFS
+After every restart of GPFS, must remount.
+Make sure to not be in `/gpfs/` directory otherwhile it will silently fail.
+
+```bash
+mmshutdown -a
+mmstartup -a
+mmmount gpfs -a
+```
+
 ### Creating a new fileset for the cluster
 See [here](filesets.md)
 
