@@ -1,0 +1,34 @@
+---
+- hosts: h100_storage_compute
+
+  tasks:
+  - name: Install fio
+    package: name=fio state=present
+    become: yes
+    become_method: sudo
+
+  - name: Install time
+    package: name=time state=present
+    become: yes
+    become_method: sudo
+
+  - name: Create testing-fio directory
+    file:
+      path: /home/h100tester/testing-fio/
+      state: directory
+
+  - name: Clone John Strunk's fio scripts
+    git:
+      repo: https://github.com/JohnStrunk/fs-performance-container.git
+      dest: /home/h100tester/testing-fio/fs-performance-container
+
+  - name: Copy script
+    template:
+      src: files/run_fio.sh
+      dest: /home/h100tester/testing-fio/run_fio.sh
+      mode: u+rwx
+
+  - name: Clone IOR
+    unarchive:
+      src: files/ior-4.0.0.tar.gz
+      dest: /home/h100tester/

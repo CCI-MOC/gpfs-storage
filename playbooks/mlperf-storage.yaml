@@ -1,0 +1,61 @@
+---
+- hosts: h100_storage_compute
+
+  tasks:
+  - name: Create testing-mlperf-storage directory
+    file:
+      path: /home/h100tester/testing-mlperf-storage/
+      state: directory
+
+  - name: Create testing-mlperf-storage/results directory
+    file:
+      path: /home/h100tester/testing-mlperf-storage/results
+      state: directory
+
+  - name: Create testing-mlperf-storage data directory
+    file:
+      path: /home/h100tester/testing-mlperf-storage/unet3d_data
+      state: directory
+
+  - name: Install podman
+    package: name=podman state=present
+    become: yes
+    become_method: sudo
+
+  - name: Copy script
+    template:
+      src: files/run_mlperf_storage.sh
+      dest: /home/h100tester/testing-mlperf-storage/run_mlperf_storage.sh
+      mode: u+rwx
+
+  - name: Create virtual environment for Python
+    command: "python3 -m venv venv"
+    args:
+      chdir: /home/h100tester/testing-mlperf-storage
+      creates: /home/h100tester/testing-mlperf-storage/venv
+
+  - name: Clone MLPerf Storage
+    git:
+      repo: https://github.com/mlcommons/storage.git
+      dest: /home/h100tester/testing-mlperf-storage/storage
+      recursive: yes
+
+  - name: Install bc
+    package: name=bc state=present
+    become: yes
+    become_method: sudo
+
+  - name: Install mpich
+    package: name=mpich state=present
+    become: yes
+    become_method: sudo
+
+  - name: Install mpich-devel
+    package: name=mpich-devel state=present
+    become: yes
+    become_method: sudo
+
+  - name: Install python3-devel
+    package: name=python3-devel state=present
+    become: yes
+    become_method: sudo
