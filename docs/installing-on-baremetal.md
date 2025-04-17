@@ -138,8 +138,10 @@ Make sure to not be in `/gpfs/` directory otherwhile it will silently fail.
 ```bash
 mmshutdown -a
 mmstartup -a
+# Wait until cluster is ready via mmgetstate -a
 mmmount gpfs -a
 ```
+The commands `mmlscluster` and `mmgetstate -a` are useful for seeing state.
 
 ### Creating a new fileset for the cluster
 See [here](filesets.md)
