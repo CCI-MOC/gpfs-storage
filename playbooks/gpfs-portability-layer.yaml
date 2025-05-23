@@ -4,18 +4,21 @@
   become_method: sudo
 
   tasks:
-  - name: Install dependencies
-    package: name={{ item }} state=present
-    with_items:
-    - kernel-devel
-    - kernel-headers
-    - gcc-c++
-    - rpm-build
-
   - name: Get kernel version
     shell: uname -r
     register: kernel_version
     changed_when: False
+
+  # TODO(knikolla): It is possible to install the specific version of kernel-headers
+  # and kernel-devel using `dnf install kernel-devel-`uname -r` kernel-headers-`uname -r`.
+  # I was hoping that the below would have the same effect, but it doesn't to.
+  - name: Install dependencies
+    package: name={{ item }} state=present
+    with_items:
+    - gcc-c++
+    - rpm-build
+    - "kernel-devel-{{ kernel_version.stdout }}"
+    - "kernel-headers-{{ kernel_version.stdout }}"
 
   - name: Check version of kernel
     shell: rpm -q kernel-headers
@@ -40,6 +43,13 @@
     shell: "/usr/lpp/mmfs/bin/mmbuildgpl --build-package"
     when: installed_gpl.changed
 
+  - name: Find GPFS GPL RPM
+    find:
+      paths: /root/rpmbuild/RPMS/x86_64/
+      patterns: "gpfs.gplbin-{{ kernel_version.stdout }}*"
+    register: rpm_files
+    when: installed_gpl.changed
+
   - name: Install GPFS RPM
-    shell: "echo dnf localinstall /root/rpmbuild/RPMS/x86_64/gpfs.gplbin-`uname -r`*"
+    shell: "dnf localinstall -y /root/rpmbuild/RPMS/x86_64/gpfs.gplbin-`uname -r`*"
     when: installed_gpl.changed
