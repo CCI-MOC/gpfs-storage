@@ -20,5 +20,5 @@
 10.7.0.171 ibm-ces2-vm-hs.local ibm-ces2-vm-hs
 
 {% for h in groups['h100_storage_compute'] %}
-{{ hostvars[h].scale_ip }}      {{ hostvars[h].desired_hostname }}
+{{ hostvars[h].scale_ip }}      {{ hostvars[h].desired_hostname }}  {{ hostvars[h].desired_hostname }}.local
 {% endfor %}

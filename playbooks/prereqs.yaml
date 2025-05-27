@@ -69,4 +69,4 @@
     become: yes
     become_method: sudo
     ansible.builtin.hostname:
-      name: "{{ vars['desired_hostname'] }}"
+      name: "{{ vars['desired_hostname'] }}.local"
