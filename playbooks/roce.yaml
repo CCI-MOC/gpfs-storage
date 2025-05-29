@@ -3,23 +3,198 @@
 
   tasks:
 
-#   - name: Copy Mellanox Driver
-#     unarchive:
-#       src: files/MLNX_OFED_LINUX-24.10-2.1.8.0-rhel9.5-x86_64.tgz
-#       dest: /home/h100tester
-
-  - name: Install dependencies
-    package: name={{ item }} state=present
-    with_items:
-      - perl-File-Find
-      - perl-File-Copy
-      - perl-File-Compare
-      - tk
-      - lsof
-    become: yes
-    become_method: sudod
-
   - name: Copy `ib_mon.py` script.
     copy:
       src: files/ib_mon.py
-      dest: /home/h100tester/ib_mon.py
+      dest: /root/ib_mon.py
+    become: yes
+    become_method: sudo
+
+  #################################################################
+  # Configure mlx5_2
+  #
+  - name: Get interface name for mlx5_2
+    shell: "ibdev2netdev | grep 5_2 | awk '{ print $5}'"
+    register: mlx5_2_name
+    check_mode: False
+    changed_when: False
+    
+  - name: Get Network Manager interface name for mlx5_2
+    shell: "nmcli con show | grep {{ mlx5_2_name.stdout }} | awk -F'  ' '{ print $1}'"
+    register: mlx5_2_nm_name
+    check_mode: False
+    changed_when: False
+
+  - name: Turn on interface mlx5_2
+    community.general.nmcli:
+      conn_name: "{{ mlx5_2_nm_name.stdout }}"
+      state: present
+      autoconnect: True
+      addr_gen_mode6: eui64
+      mtu: 9000
+      never_default4: yes
+    become: yes
+    become_method: sudo
+
+  - name: Get IP address for mlx5_2
+    shell: "ifconfig {{ mlx5_2_name.stdout }} | grep 'inet ' | awk '{print $2}'"
+    register: mlx5_2_ip
+    check_mode: False
+    changed_when: False
+
+  - name: Configure mlx5_2
+    community.general.nmcli:
+      conn_name: "{{ mlx5_2_nm_name.stdout }}"
+      state: present
+      never_default4: yes
+      routes4:
+        - "0.0.0.0/1 10.7.15.254 table=102"
+        - "128.0.0.0/1 10.7.15.254 table=102"
+        - "10.7.0.0/20 src={{ mlx5_2_ip.stdout }} table=102"
+      routing_rules4: "priority 32761 from {{ mlx5_2_ip.stdout }} table 102"
+    become: yes
+    become_method: sudo
+
+  #################################################################
+  # Configure mlx5_3
+  #
+  - name: Get interface name for mlx5_3
+    shell: "ibdev2netdev | grep 5_3 | awk '{ print $5}'"
+    register: mlx5_3_name
+    check_mode: False
+    changed_when: False
+
+  - name: Get Network Manager interface name for mlx5_3
+    shell: "nmcli con show | grep {{ mlx5_3_name.stdout }} | awk -F'  ' '{ print $1}'"
+    register: mlx5_3_nm_name
+    check_mode: False
+    changed_when: False
+
+  - name: Turn on interface mlx5_3
+    community.general.nmcli:
+      conn_name: "{{ mlx5_3_nm_name.stdout }}"
+      state: present
+      autoconnect: True
+      addr_gen_mode6: eui64
+      mtu: 9000
+      never_default4: yes
+    become: yes
+    become_method: sudo
+
+  - name: Get IP address for mlx5_3
+    shell: "ifconfig {{ mlx5_3_name.stdout }} | grep 'inet ' | awk '{print $2}'"
+    register: mlx5_3_ip
+    check_mode: False
+    changed_when: False
+
+  - name: Configure mlx5_3
+    community.general.nmcli:
+      conn_name: "{{ mlx5_3_nm_name.stdout }}"
+      state: present
+      never_default4: yes
+      routes4:
+        - "0.0.0.0/1 10.7.15.254 table=103"
+        - "128.0.0.0/1 10.7.15.254 table=103"
+        - "10.7.0.0/20 src={{ mlx5_3_ip.stdout }} table=103"
+      routing_rules4: "priority 32761 from {{ mlx5_3_ip.stdout }} table 103"
+    become: yes
+    become_method: sudo
+
+  #################################################################
+  # Configure mlx5_4
+  #
+  - name: Get interface name for mlx5_4
+    shell: "ibdev2netdev | grep 5_4 | awk '{ print $5}'"
+    register: mlx5_4_name
+    check_mode: False
+    changed_when: False
+    
+  - name: Get Network Manager interface name for mlx5_4
+    shell: "nmcli con show | grep {{ mlx5_4_name.stdout }} | awk -F'  ' '{ print $1}'"
+    register: mlx5_4_nm_name
+    check_mode: False
+    changed_when: False
+
+  - name: Turn on interface mlx5_4
+    community.general.nmcli:
+      conn_name: "{{ mlx5_4_nm_name.stdout }}"
+      state: present
+      autoconnect: True
+      addr_gen_mode6: eui64
+      mtu: 9000
+      never_default4: yes
+    become: yes
+    become_method: sudo
+
+  - name: Get IP address for mlx5_4
+    shell: "ifconfig {{ mlx5_4_name.stdout }} | grep 'inet ' | awk '{print $2}'"
+    register: mlx5_4_ip
+    check_mode: False
+    changed_when: False
+
+  - name: Configure mlx5_4
+    community.general.nmcli:
+      conn_name: "{{ mlx5_4_nm_name.stdout }}"
+      state: present
+      never_default4: yes
+      routes4:
+        - "0.0.0.0/1 10.7.15.254 table=104"
+        - "128.0.0.0/1 10.7.15.254 table=104"
+        - "10.7.0.0/20 src={{ mlx5_4_ip.stdout }} table=104"
+      routing_rules4: "priority 32761 from {{ mlx5_4_ip.stdout }} table 104"
+    become: yes
+    become_method: sudo
+
+  #################################################################
+  # Configure mlx5_5
+  #
+  - name: Get interface name for mlx5_5
+    shell: "ibdev2netdev | grep 5_5 | awk '{ print $5}'"
+    register: mlx5_5_name
+    check_mode: False
+    changed_when: False
+    
+  - name: Get Network Manager interface name for mlx5_5
+    shell: "nmcli con show | grep {{ mlx5_5_name.stdout }} | awk -F'  ' '{ print $1}'"
+    register: mlx5_5_nm_name
+    check_mode: False
+    changed_when: False
+
+  - name: Turn on interface mlx5_5
+    community.general.nmcli:
+      conn_name: "{{ mlx5_5_nm_name.stdout }}"
+      state: present
+      autoconnect: True
+      addr_gen_mode6: eui64
+      mtu: 9000
+      never_default4: yes
+    become: yes
+    become_method: sudo
+
+  - name: Get IP address for mlx5_5
+    shell: "ifconfig {{ mlx5_5_name.stdout }} | grep 'inet ' | awk '{print $2}'"
+    register: mlx5_5_ip
+    check_mode: False
+    changed_when: False
+
+  - name: Configure mlx5_5
+    community.general.nmcli:
+      conn_name: "{{ mlx5_5_nm_name.stdout }}"
+      state: present
+      never_default4: yes
+      routes4:
+        - "0.0.0.0/1 10.7.15.254 table=101"
+        - "128.0.0.0/1 10.7.15.254 table=101"
+        - "10.7.0.0/20 src={{ mlx5_5_ip.stdout }} table=101"
+      routing_rules4: "priority 32761 from {{ mlx5_5_ip.stdout }} table 101"
+    become: yes
+    become_method: sudo
+
+  #################################
+  # Configure for GDS
+  - name: Set up profile
+    template:
+      src: files/cufile.json.j2
+      dest: /etc/cufile.json
+    become: yes
+    become_method: sudo

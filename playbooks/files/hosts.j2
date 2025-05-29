@@ -1,10 +1,6 @@
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 
-10.7.1.24    gpfs-client-01 gpfs-client-01.local
-10.7.1.25    gpfs-client-02 gpfs-client-02.local
-10.7.1.26    gpfs-client-03 gpfs-client-03.local
-
 10.6.1.10 baremetal-ems1-cm
 10.6.1.11 ibm-ems1-cm
 
@@ -22,3 +18,7 @@
 10.7.0.151 ibm-afmgw2-vm-hs.local ibm-afmgw2-vm-hs
 10.7.0.170 ibm-ces1-vm-hs.local ibm-ces1-vm-hs
 10.7.0.171 ibm-ces2-vm-hs.local ibm-ces2-vm-hs
+
+{% for h in groups['h100_storage_compute'] %}
+{{ hostvars[h].scale_ip }}      {{ hostvars[h].desired_hostname }}  {{ hostvars[h].desired_hostname }}.local
+{% endfor %}

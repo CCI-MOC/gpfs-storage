@@ -3,6 +3,23 @@
 
   tasks:
 
+  - name: Ensure `lpp` directory exists
+    file:
+      path: .ssh/
+      state: directory
+    become: yes
+    become_method: sudo
+
+  # Download using the `download_scale.yaml` playbook from a machine that
+  # already has scale installed before running this playbook.
+  # This is around 2GB so upload may take a while.
+  - name: Copy downloaded `mmfs` directory to `/usr/lpp/mmfs`
+    synchronize:
+      src: files/mmfs
+      dest: /usr/lpp/
+    become: yes
+    become_method: sudo
+
   # The profile file loads the environment variables into
   # PATH and LD_LIBRARY_PATH
   - name: Set up profile
@@ -12,3 +29,30 @@
     become: yes
     become_method: sudo
 
+  - name: Find all rpm files in `/usr/lpp/mmfs/5.2.2.1/gpfs_rpms/` folder
+    find:
+      paths: /usr/lpp/mmfs/5.2.2.1/gpfs_rpms/
+      patterns: "*.rpm"
+    register: rpm_files
+
+  - name: Import a key from a file
+    ansible.builtin.rpm_key:
+      state: present
+      key: /usr/lpp/mmfs/5.2.2.1/Public_Keys/Storage_Scale_public_key.pgp
+    become: yes
+    become_method: sudo
+
+  - name: Install GPFS Base
+    dnf:
+      name: /usr/lpp/mmfs/5.2.2.1/gpfs_rpms/gpfs.base-5.2.2-1.x86_64.rpm
+      state: present
+    become: yes
+    become_method: sudo
+
+  - name: Install GPFS RPMs
+    dnf:
+      name: "{{ item.path }}"
+      state: present
+    with_items: "{{ rpm_files.files }}"
+    become: yes
+    become_method: sudo

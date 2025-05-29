@@ -1,0 +1,11 @@
+---
+- hosts: h100_gpfs_source
+
+  tasks:
+  - name: Fetch scale `/usr/lpp/mmfs`
+    synchronize:
+      src:  /usr/lpp/mmfs
+      dest: files/
+      mode: pull
+    become: yes
+    become_method: sudo
