@@ -6,22 +6,31 @@
   - name: Copy `ib_mon.py` script.
     copy:
       src: files/ib_mon.py
-      dest: /home/h100tester/ib_mon.py
+      dest: /root/ib_mon.py
+    become: yes
+    become_method: sudo
 
   #################################################################
   # Configure mlx5_2
   #
   - name: Get interface name for mlx5_2
-    shell: "nmcli con show `ibdev2netdev | grep 5_2 | awk '{ print $5}'` | grep connection.id | awk '{ print $2 }'"
+    shell: "ibdev2netdev | grep 5_2 | awk '{ print $5}'"
     register: mlx5_2_name
+    check_mode: False
+    changed_when: False
+    
+  - name: Get Network Manager interface name for mlx5_2
+    shell: "nmcli con show | grep {{ mlx5_2_name.stdout }} | awk -F'  ' '{ print $1}'"
+    register: mlx5_2_nm_name
     check_mode: False
     changed_when: False
 
   - name: Turn on interface mlx5_2
     community.general.nmcli:
-      conn_name: "{{ mlx5_2_name.stdout }}"
+      conn_name: "{{ mlx5_2_nm_name.stdout }}"
       state: present
       autoconnect: True
+      addr_gen_mode6: eui64
       mtu: 9000
       never_default4: yes
     become: yes
@@ -35,7 +44,7 @@
 
   - name: Configure mlx5_2
     community.general.nmcli:
-      conn_name: "{{ mlx5_2_name.stdout }}"
+      conn_name: "{{ mlx5_2_nm_name.stdout }}"
       state: present
       never_default4: yes
       routes4:
@@ -50,16 +59,23 @@
   # Configure mlx5_3
   #
   - name: Get interface name for mlx5_3
-    shell: "nmcli con show `ibdev2netdev | grep 5_3 | awk '{ print $5}'` | grep connection.id | awk '{ print $2 }'"
+    shell: "ibdev2netdev | grep 5_3 | awk '{ print $5}'"
     register: mlx5_3_name
+    check_mode: False
+    changed_when: False
+
+  - name: Get Network Manager interface name for mlx5_3
+    shell: "nmcli con show | grep {{ mlx5_3_name.stdout }} | awk -F'  ' '{ print $1}'"
+    register: mlx5_3_nm_name
     check_mode: False
     changed_when: False
 
   - name: Turn on interface mlx5_3
     community.general.nmcli:
-      conn_name: "{{ mlx5_3_name.stdout }}"
+      conn_name: "{{ mlx5_3_nm_name.stdout }}"
       state: present
       autoconnect: True
+      addr_gen_mode6: eui64
       mtu: 9000
       never_default4: yes
     become: yes
@@ -73,7 +89,7 @@
 
   - name: Configure mlx5_3
     community.general.nmcli:
-      conn_name: "{{ mlx5_3_name.stdout }}"
+      conn_name: "{{ mlx5_3_nm_name.stdout }}"
       state: present
       never_default4: yes
       routes4:
@@ -88,16 +104,23 @@
   # Configure mlx5_4
   #
   - name: Get interface name for mlx5_4
-    shell: "nmcli con show `ibdev2netdev | grep 5_4 | awk '{ print $5}'` | grep connection.id | awk '{ print $2 }'"
+    shell: "ibdev2netdev | grep 5_4 | awk '{ print $5}'"
     register: mlx5_4_name
+    check_mode: False
+    changed_when: False
+    
+  - name: Get Network Manager interface name for mlx5_4
+    shell: "nmcli con show | grep {{ mlx5_4_name.stdout }} | awk -F'  ' '{ print $1}'"
+    register: mlx5_4_nm_name
     check_mode: False
     changed_when: False
 
   - name: Turn on interface mlx5_4
     community.general.nmcli:
-      conn_name: "{{ mlx5_4_name.stdout }}"
+      conn_name: "{{ mlx5_4_nm_name.stdout }}"
       state: present
       autoconnect: True
+      addr_gen_mode6: eui64
       mtu: 9000
       never_default4: yes
     become: yes
@@ -111,7 +134,7 @@
 
   - name: Configure mlx5_4
     community.general.nmcli:
-      conn_name: "{{ mlx5_4_name.stdout }}"
+      conn_name: "{{ mlx5_4_nm_name.stdout }}"
       state: present
       never_default4: yes
       routes4:
@@ -126,16 +149,23 @@
   # Configure mlx5_5
   #
   - name: Get interface name for mlx5_5
-    shell: "nmcli con show `ibdev2netdev | grep 5_5 | awk '{ print $5}'` | grep connection.id | awk '{ print $2 }'"
+    shell: "ibdev2netdev | grep 5_5 | awk '{ print $5}'"
     register: mlx5_5_name
+    check_mode: False
+    changed_when: False
+    
+  - name: Get Network Manager interface name for mlx5_5
+    shell: "nmcli con show | grep {{ mlx5_5_name.stdout }} | awk -F'  ' '{ print $1}'"
+    register: mlx5_5_nm_name
     check_mode: False
     changed_when: False
 
   - name: Turn on interface mlx5_5
     community.general.nmcli:
-      conn_name: "{{ mlx5_5_name.stdout }}"
+      conn_name: "{{ mlx5_5_nm_name.stdout }}"
       state: present
       autoconnect: True
+      addr_gen_mode6: eui64
       mtu: 9000
       never_default4: yes
     become: yes
@@ -149,7 +179,7 @@
 
   - name: Configure mlx5_5
     community.general.nmcli:
-      conn_name: "{{ mlx5_5_name.stdout }}"
+      conn_name: "{{ mlx5_5_nm_name.stdout }}"
       state: present
       never_default4: yes
       routes4:
@@ -164,7 +194,7 @@
   # Configure for GDS
   - name: Set up profile
     template:
-      src: files/cufile.json
+      src: files/cufile.json.j2
       dest: /etc/cufile.json
     become: yes
     become_method: sudo
