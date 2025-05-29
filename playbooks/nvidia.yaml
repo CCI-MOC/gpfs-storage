@@ -1,0 +1,38 @@
+---
+- hosts: h100_storage_compute
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: Setup Mellanox & EPEL Signing Keys
+    ansible.builtin.rpm_key:
+      state: present
+      key: "{{ item }}"
+    with_items:
+      - "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-9"
+      - "http://www.mellanox.com/downloads/ofed/RPM-GPG-KEY-Mellanox"
+
+  - name: Install DOCA Repo & EPEL
+    dnf:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - "https://www.mellanox.com/downloads/DOCA/DOCA_v3.0.0/host/doca-host-3.0.0-058000_25.04_rhel94.x86_64.rpm"
+      - "https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm"
+
+  - name: Enable codeready-builder repository
+    community.general.rhsm_repository:
+      name: codeready-builder-for-rhel-9-x86_64-rpms
+      state: enabled
+
+  - name: Add cuda-rhel9 repository
+    shell: dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/rhel9/x86_64/cuda-rhel9.repo
+    args:
+      creates: /etc/yum.repos.d/cuda-rhel9.repo
+
+# This will hang because I'm assuming the network interface flutters just enough
+# to get the console output stuck.
+  - name: Install doca-all (This will take around 15 minutes and then will hang. It's ok to CTRL + C then.)
+    dnf:
+      name: doca-all
+      state: present
