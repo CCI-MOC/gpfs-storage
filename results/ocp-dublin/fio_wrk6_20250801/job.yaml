@@ -1,0 +1,65 @@
+---
+# This is a job file for kubernetes to run the fs-performance tests
+#
+# Usage:
+# - Modify the PVC to obtain the type of storage you want to test.
+#   This includes adjusting the accessModes and storageClass.
+# - Apply this file: kubectl apply -f fs-performance.yml
+# - When the job is done, read the pod log for the results.
+# - Clean up: kubctl delete -f fs-performance.yml
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: fs-perf-target-wrk6
+  namespace: cnsa-benchmark
+spec:
+  # To test a particular type of storage, set the name of the StorageClass here.
+  storageClassName: ibm-spectrum-scale-fileset
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1500Gi
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fio-benchmark-wrk6-20250801
+  namespace: cnsa-benchmark
+spec:
+  template:
+    metadata:
+      name: fio-benchmark
+    spec:
+      containers:
+        - name: fs-performance
+          image: quay.io/johnstrunk/fs-performance:latest
+          command: ["fio"]
+          args: 
+            - "--filesize=1024G"
+            - "--runtime=10m"
+            - "--filename=/target/test_fio"
+            - "--ioengine=libaio"
+            - "--direct=1"
+            - "--time_based"
+            - "--stonewall"
+            - "--iodepth=32"
+            - "--bs=16m"
+            - "--rw=read"
+            - "--name=sw16m@qd32"
+            - "--numjobs=32"
+            - "--group_reporting"
+          volumeMounts:
+            - name: target
+              mountPath: /target
+          resources:
+            requests:
+              cpu: "128"
+      restartPolicy: Never
+      nodeName: wrk-6
+      volumes:
+        - name: target
+          persistentVolumeClaim:
+            claimName: fs-perf-target-wrk6
