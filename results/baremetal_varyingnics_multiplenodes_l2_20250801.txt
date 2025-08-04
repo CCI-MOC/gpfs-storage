@@ -1,0 +1,681 @@
+Script started on 2025-08-01 15:59:36-04:00 [TERM="xterm-256color" TTY="/dev/pts/2" COLUMNS="154" LINES="20"]
+]0;root@gpfs-client-01:~[?2004h[root@gpfs-client-01 ~]# cat variable_nic_benchmarks.sh 
+[?2004lset -xe
+
+export PATH="$PATH:/usr/lib64/mpich/bin"
+
+FILE="/gpfs/remote_test02/test_ior"
+ITERATIONS=10
+
+echo "------------ 1 NICS --------------"
+./apply_setting_and_restart.sh "mlx5_5/1"
+mpiexec --hosts gpfs-client-03,gpfs-client-02 -np 64 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i $ITERATIONS
+mpiexec --hosts gpfs-client-01,gpfs-client-03,gpfs-client-02 -np 96 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i $ITERATIONS
+
+echo "------------ 2 NICS --------------"
+./apply_setting_and_restart.sh "mlx5_5/1 mlx5_4/1"
+mpiexec --hosts gpfs-client-03,gpfs-client-02 -np 64 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i $ITERATIONS
+mpiexec --hosts gpfs-client-01,gpfs-client-03,gpfs-client-02 -np 96 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i $ITERATIONS
+
+echo "------------ 3 NICS --------------"
+./apply_setting_and_restart.sh "mlx5_5/1 mlx5_4/1 mlx5_3/1"
+mpiexec --hosts gpfs-client-03,gpfs-client-02 -np 64 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i $ITERATIONS
+mpiexec --hosts gpfs-client-01,gpfs-client-03,gpfs-client-02 -np 96 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i $ITERATIONS
+
+echo "------------ 4 NICS --------------"
+./apply_setting_and_restart.sh "mlx5_5/1 mlx5_4/1 mlx5_3/1 mlx5_2/1"
+mpiexec --hosts gpfs-client-03,gpfs-client-02 -np 64 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i $ITERATIONS
+mpiexec --hosts gpfs-client-01,gpfs-client-03,gpfs-client-02 -np 96 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i $ITERATIONS]0;root@gpfs-client-01:~[?2004h[root@gpfs-client-01 ~]# ./variable_nic_benchmarks.sh 
+[?2004l++ export PATH=/root/.local/bin:/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/opt/mellanox/doca/tools/:/usr/lpp/mmfs/bin:/opt/mellanox/doca/tools/:/usr/lib64/mpich/bin
+++ PATH=/root/.local/bin:/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/opt/mellanox/doca/tools/:/usr/lpp/mmfs/bin:/opt/mellanox/doca/tools/:/usr/lib64/mpich/bin
+++ FILE=/gpfs/remote_test02/test_ior
+++ ITERATIONS=10
+++ echo '------------ 1 NICS --------------'
+------------ 1 NICS --------------
+++ ./apply_setting_and_restart.sh mlx5_5/1
+-- Setting verbsPorts=mlx5_5/1 --
+mmchconfig: Command successfully completed
+mmchconfig: Propagating the cluster configuration data to all
+  affected nodes.  This is an asynchronous process.
+Fri Aug  1 16:00:42 EDT 2025: mmshutdown: Starting force unmount of GPFS file systems
+Fri Aug  1 16:00:47 EDT 2025: mmshutdown: Shutting down GPFS daemons
+Fri Aug  1 16:01:05 EDT 2025: mmshutdown: Finished
+Fri Aug  1 16:01:05 EDT 2025: mmstartup: Starting GPFS ...
+-- Waiting for Cluster to become Active --
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+-- Mounting filesystem --
+Fri Aug  1 16:02:22 EDT 2025: mmmount: Mounting file systems ...
+-- Ready --
+ ! ccrEnabled 1
+ ! cipherList AUTHONLY
+ ! clusterId 7910609039694056090
+ ! clusterName h100test2.local
+ ! dmapiFileHandleSize 32
+ ! ignorePrefetchLUNCount 1
+ ! maxblocksize 16777216
+ ! maxFilesToCache 131072
+ ! maxMBpS 100000
+ ! maxStatCache 131072
+ ! minReleaseLevel 3600
+ ! myNodeConfigNumber 8
+ ! nsdRAIDClientOnlyChecksum 1
+ ! numaMemoryInterleave yes
+ ! pagepool 34359738368
+ ! sdrNotifyAuthEnabled yes
+ ! tscCmdAllowRemoteConnections no
+ ! verbsGPUDirectStorage 1
+ ! verbsPorts mlx5_5/1
+ ! verbsRdma 1
+ ! verbsRdmaCm enable
+ ! verbsRdmaSend 1
+ ! workerThreads 1024
+++ mpiexec --hosts gpfs-client-03,gpfs-client-02 -np 64 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+IOR-4.0.0: MPI Coordinated Test of Parallel I/O
+Began               : Fri Aug  1 16:02:25 2025
+Command line        : /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+Machine             : Linux gpfs-client-03.local
+TestID              : 0
+StartTime           : Fri Aug  1 16:02:25 2025
+Path                : /gpfs/remote_test02/test_ior.00000000
+FS                  : 808.7 TiB   Used FS: 0.5%   Inodes: 0.1 Mi   Used Inodes: 1.0%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /gpfs/remote_test02/test_ior
+access              : file-per-process
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : constant task offset
+task offset         : 1
+nodes               : 2
+tasks               : 64
+clients per node    : 32
+repetitions         : 10
+xfersize            : 16 MiB
+blocksize           : 24 GiB
+aggregate filesize  : 1.50 TiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     55115      3446.24    0.018495    25165824   16384      0.104744   28.53      0.657077   28.54      0   
+read      48231      3023.98    0.021086    25165824   16384      0.124518   32.51      3.55       32.61      0   
+write     55699      3481.38    0.017918    25165824   16384      1.40       28.24      1.47       28.24      1   
+read      47976      3016.41    0.021179    25165824   16384      0.265381   32.59      3.25       32.78      1   
+write     55271      3454.66    0.011139    25165824   16384      5.52       28.46      11.34      28.46      2   
+read      48176      3011.60    0.021007    25165824   16384      0.055854   32.64      3.14       32.65      2   
+write     53476      3342.38    0.012619    25165824   16384      8.30       29.41      10.03      29.41      3   
+read      48383      3024.50    0.021057    25165824   16384      0.165259   32.50      2.98       32.51      3   
+write     55397      3462.50    0.018121    25165824   16384      0.168903   28.39      1.09       28.39      4   
+read      48461      3029.23    0.020235    25165824   16384      0.072435   32.45      3.40       32.46      4   
+write     55639      3477.61    0.018182    25165824   16384      0.156766   28.27      0.670606   28.27      5   
+read      48191      3024.25    0.020997    25165824   16384      0.228864   32.51      2.90       32.64      5   
+write     55443      3465.37    0.018300    25165824   16384      0.174351   28.37      0.854187   28.37      6   
+read      48114      3007.91    0.020516    25165824   16384      0.078520   32.68      3.32       32.69      6   
+write     54861      3429.03    0.017468    25165824   16384      0.269108   28.67      1.84       28.67      7   
+read      48200      3016.98    0.020807    25165824   16384      0.235268   32.58      2.95       32.63      7   
+write     55651      3478.32    0.018135    25165824   16384      0.153720   28.26      0.929213   28.26      8   
+read      48119      3019.52    0.020929    25165824   16384      0.180879   32.56      3.06       32.69      8   
+write     55687      3480.60    0.018198    25165824   16384      0.163029   28.24      0.923618   28.24      9   
+read      47949      3009.33    0.021267    25165824   16384      0.225418   32.67      3.29       32.80      9   
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write       55698.91   53475.51   55223.72     638.31    3481.18    3342.22    3451.48      39.89   28.48557         NA            NA     0     64  32   10   1     1        1         0    0      1 25769803776 16777216 1572864.0 POSIX      0
+read        48460.50   47948.56   48179.88     150.41    3028.78    2996.79    3011.24       9.40   32.64598         NA            NA     0     64  32   10   1     1        1         0    0      1 25769803776 16777216 1572864.0 POSIX      0
+Finished            : Fri Aug  1 16:12:37 2025
+++ mpiexec --hosts gpfs-client-01,gpfs-client-03,gpfs-client-02 -np 96 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+IOR-4.0.0: MPI Coordinated Test of Parallel I/O
+Began               : Fri Aug  1 16:12:38 2025
+Command line        : /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+Machine             : Linux gpfs-client-01.local
+TestID              : 0
+StartTime           : Fri Aug  1 16:12:38 2025
+Path                : /gpfs/remote_test02/test_ior.00000000
+FS                  : 808.7 TiB   Used FS: 0.6%   Inodes: 0.1 Mi   Used Inodes: 1.1%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /gpfs/remote_test02/test_ior
+access              : file-per-process
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : constant task offset
+task offset         : 1
+nodes               : 3
+tasks               : 96
+clients per node    : 32
+repetitions         : 10
+xfersize            : 16 MiB
+blocksize           : 24 GiB
+aggregate filesize  : 2.25 TiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     82989      5187       0.018076    25165824   16384      0.256650   28.43      1.49       28.43      0   
+read      72037      4503       0.019574    25165824   16384      0.169728   32.74      3.50       32.75      0   
+write     80754      5047       0.018296    25165824   16384      0.332979   29.21      2.41       29.22      1   
+read      72334      4521       0.019480    25165824   16384      0.190954   32.61      3.88       32.62      1   
+write     83220      5201       0.018355    25165824   16384      0.149940   28.35      1.22       28.35      2   
+read      71882      4505       0.019434    25165824   16384      0.336510   32.73      3.60       32.82      2   
+write     80839      5053       0.017422    25165824   16384      0.445964   29.18      2.42       29.19      3   
+read      72264      4517       0.019303    25165824   16384      0.063382   32.64      3.41       32.65      3   
+write     80792      5050       0.018686    25165824   16384      0.138965   29.20      1.44       29.20      4   
+read      72047      4504       0.019846    25165824   16384      0.094287   32.74      3.22       32.75      4   
+write     80883      5055       0.018562    25165824   16384      0.475167   29.17      2.17       29.17      5   
+read      72253      4517       0.019838    25165824   16384      0.183649   32.64      4.30       32.65      5   
+write     83263      5204       0.018056    25165824   16384      0.211212   28.33      1.24       28.34      6   
+read      72121      4511       0.019823    25165824   16384      0.244568   32.69      3.76       32.71      6   
+write     83008      5188       0.018291    25165824   16384      0.187685   28.42      1.26       28.42      7   
+read      72180      4519       0.019575    25165824   16384      0.257221   32.63      3.88       32.69      7   
+write     82951      5185       0.018297    25165824   16384      0.182095   28.44      1.21       28.44      8   
+read      72257      4517       0.019812    25165824   16384      0.247179   32.64      3.77       32.65      8   
+write     81364      5086       0.018661    25165824   16384      0.151528   29.00      1.54       29.00      9   
+read      55160      3447.91    0.026063    25165824   16384      9.55       42.77      3.82       42.77      9   
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write       83262.78   80754.48   82006.29    1095.06    5203.92    5047.16    5125.39      68.44   28.77483         NA            NA     0     96  32   10   1     1        1         0    0      1 25769803776 16777216 2359296.0 POSIX      0
+read        72334.01   55160.13   70453.51    5099.42    4520.88    3447.51    4403.34     318.71   33.70604         NA            NA     0     96  32   10   1     1        1         0    0      1 25769803776 16777216 2359296.0 POSIX      0
+Finished            : Fri Aug  1 16:23:04 2025
+++ echo '------------ 2 NICS --------------'
+------------ 2 NICS --------------
+++ ./apply_setting_and_restart.sh 'mlx5_5/1 mlx5_4/1'
+-- Setting verbsPorts=mlx5_5/1 mlx5_4/1 --
+mmchconfig: Command successfully completed
+mmchconfig: Propagating the cluster configuration data to all
+  affected nodes.  This is an asynchronous process.
+Fri Aug  1 16:23:05 EDT 2025: mmshutdown: Starting force unmount of GPFS file systems
+Fri Aug  1 16:23:10 EDT 2025: mmshutdown: Shutting down GPFS daemons
+Fri Aug  1 16:23:19 EDT 2025: mmshutdown: Finished
+Fri Aug  1 16:23:19 EDT 2025: mmstartup: Starting GPFS ...
+-- Waiting for Cluster to become Active --
+.
+.
+-- Mounting filesystem --
+Fri Aug  1 16:23:33 EDT 2025: mmmount: Mounting file systems ...
+-- Ready --
+ ! ccrEnabled 1
+ ! cipherList AUTHONLY
+ ! clusterId 7910609039694056090
+ ! clusterName h100test2.local
+ ! dmapiFileHandleSize 32
+ ! ignorePrefetchLUNCount 1
+ ! maxblocksize 16777216
+ ! maxFilesToCache 131072
+ ! maxMBpS 100000
+ ! maxStatCache 131072
+ ! minReleaseLevel 3600
+ ! myNodeConfigNumber 8
+ ! nsdRAIDClientOnlyChecksum 1
+ ! numaMemoryInterleave yes
+ ! pagepool 34359738368
+ ! sdrNotifyAuthEnabled yes
+ ! tscCmdAllowRemoteConnections no
+ ! verbsGPUDirectStorage 1
+ ! verbsPorts mlx5_5/1 mlx5_4/1
+ ! verbsRdma 1
+ ! verbsRdmaCm enable
+ ! verbsRdmaSend 1
+ ! workerThreads 1024
+++ mpiexec --hosts gpfs-client-03,gpfs-client-02 -np 64 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+IOR-4.0.0: MPI Coordinated Test of Parallel I/O
+Began               : Fri Aug  1 16:24:23 2025
+Command line        : /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+Machine             : Linux gpfs-client-03.local
+TestID              : 0
+StartTime           : Fri Aug  1 16:24:23 2025
+Path                : /gpfs/remote_test02/test_ior.00000000
+FS                  : 808.7 TiB   Used FS: 0.5%   Inodes: 0.1 Mi   Used Inodes: 1.0%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /gpfs/remote_test02/test_ior
+access              : file-per-process
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : constant task offset
+task offset         : 1
+nodes               : 2
+tasks               : 64
+clients per node    : 32
+repetitions         : 10
+xfersize            : 16 MiB
+blocksize           : 24 GiB
+aggregate filesize  : 1.50 TiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     98015      6128       0.010258    25165824   16384      0.068525   16.04      0.559358   16.05      0   
+read      93459      5843       0.009662    25165824   16384      0.152560   16.82      2.22       16.83      0   
+write     97005      6063       0.009101    25165824   16384      0.202099   16.21      2.77       16.21      1   
+read      92049      5754       0.010215    25165824   16384      0.091309   17.09      1.96       17.09      1   
+write     97976      6124       0.009291    25165824   16384      0.093219   16.05      1.87       16.05      2   
+read      93806      5865       0.010159    25165824   16384      0.041212   16.76      1.60       16.77      2   
+write     94442      5903       0.009584    25165824   16384      0.129709   16.65      2.24       16.65      3   
+read      93522      5847       0.010054    25165824   16384      0.044912   16.81      1.84       16.82      3   
+write     101177     6324       0.009002    25165824   16384      1.50       15.54      1.84       15.55      4   
+read      92618      5790       0.010042    25165824   16384      0.031625   16.98      2.26       16.98      4   
+write     96137      6009       0.009017    25165824   16384      1.65       16.36      2.95       16.36      5   
+read      93538      5848       0.009931    25165824   16384      0.043763   16.81      2.04       16.82      5   
+write     97982      6124       0.009313    25165824   16384      0.283120   16.05      2.13       16.05      6   
+read      92790      5801       0.010026    25165824   16384      0.041127   16.94      1.92       16.95      6   
+write     98685      6168       0.009224    25165824   16384      0.593295   15.94      2.37       15.94      7   
+read      93023      5816       0.010020    25165824   16384      0.051020   16.90      1.72       16.91      7   
+write     97405      6088       0.009446    25165824   16384      0.110929   16.15      1.82       16.15      8   
+read      93474      5844       0.009931    25165824   16384      0.065991   16.82      1.68       16.83      8   
+write     99648      6229       0.009196    25165824   16384      0.162329   15.78      2.00       15.78      9   
+read      93081      5820       0.010089    25165824   16384      0.045947   16.89      2.03       16.90      9   
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write      101177.30   94441.67   97846.95    1747.09    6323.58    5902.60    6115.43     109.19   16.07987         NA            NA     0     64  32   10   1     1        1         0    0      1 25769803776 16777216 1572864.0 POSIX      0
+read        93805.68   92049.01   93135.91     506.29    5862.86    5753.06    5820.99      31.64   16.88834         NA            NA     0     64  32   10   1     1        1         0    0      1 25769803776 16777216 1572864.0 POSIX      0
+Finished            : Fri Aug  1 16:29:53 2025
+++ mpiexec --hosts gpfs-client-01,gpfs-client-03,gpfs-client-02 -np 96 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+IOR-4.0.0: MPI Coordinated Test of Parallel I/O
+Began               : Fri Aug  1 16:29:54 2025
+Command line        : /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+Machine             : Linux gpfs-client-01.local
+TestID              : 0
+StartTime           : Fri Aug  1 16:29:54 2025
+Path                : /gpfs/remote_test02/test_ior.00000000
+FS                  : 808.7 TiB   Used FS: 0.6%   Inodes: 0.1 Mi   Used Inodes: 1.1%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /gpfs/remote_test02/test_ior
+access              : file-per-process
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : constant task offset
+task offset         : 1
+nodes               : 3
+tasks               : 96
+clients per node    : 32
+repetitions         : 10
+xfersize            : 16 MiB
+blocksize           : 24 GiB
+aggregate filesize  : 2.25 TiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     123881     7744       0.012215    25165824   16384      0.229804   19.04      1.05       19.04      0   
+read      140046     8756       0.010057    25165824   16384      0.128417   16.84      2.31       16.85      0   
+write     121212     7576       0.011776    25165824   16384      8.32       19.46      3.48       19.46      1   
+read      140386     8775       0.009744    25165824   16384      0.101054   16.80      2.19       16.81      1   
+write     122956     7685       0.012344    25165824   16384      0.168554   19.19      2.20       19.19      2   
+read      140712     8798       0.010028    25165824   16384      0.113011   16.76      2.13       16.77      2   
+write     123637     7728       0.012120    25165824   16384      0.164858   19.08      1.45       19.08      3   
+read      139211     8730       0.009853    25165824   16384      0.204445   16.89      2.08       16.95      3   
+write     122476     7655       0.012365    25165824   16384      0.142735   19.26      0.916009   19.26      4   
+read      141129     8823       0.009432    25165824   16384      0.168124   16.71      2.28       16.72      4   
+write     123173     7699       0.012309    25165824   16384      0.118962   19.15      0.786200   19.15      5   
+read      141479     8845       0.010047    25165824   16384      0.154719   16.67      2.37       16.68      5   
+write     121869     7618       0.011825    25165824   16384      0.140188   19.36      1.29       19.36      6   
+read      140708     8797       0.009732    25165824   16384      0.052788   16.76      1.98       16.77      6   
+write     122219     7640       0.012508    25165824   16384      0.176807   19.30      0.974163   19.30      7   
+read      142234     8893       0.009852    25165824   16384      0.055471   16.58      1.91       16.59      7   
+write     122068     7630       0.012459    25165824   16384      0.121753   19.33      1.68       19.33      8   
+read      141319     8835       0.009433    25165824   16384      0.031276   16.69      2.28       16.69      8   
+write     122485     7656       0.012428    25165824   16384      0.133020   19.26      1.27       19.26      9   
+read      141276     8833       0.010086    25165824   16384      0.045624   16.69      1.74       16.70      9   
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write      123880.60  121211.63  122597.46     780.31    7742.54    7575.73    7662.34      48.77   19.24503         NA            NA     0     96  32   10   1     1        1         0    0      1 25769803776 16777216 2359296.0 POSIX      0
+read       142234.27  139210.73  140850.04     798.76    8889.64    8700.67    8803.13      49.92   16.75095         NA            NA     0     96  32   10   1     1        1         0    0      1 25769803776 16777216 2359296.0 POSIX      0
+Finished            : Fri Aug  1 16:35:55 2025
+++ echo '------------ 3 NICS --------------'
+------------ 3 NICS --------------
+++ ./apply_setting_and_restart.sh 'mlx5_5/1 mlx5_4/1 mlx5_3/1'
+-- Setting verbsPorts=mlx5_5/1 mlx5_4/1 mlx5_3/1 --
+mmchconfig: Command successfully completed
+mmchconfig: Propagating the cluster configuration data to all
+  affected nodes.  This is an asynchronous process.
+Fri Aug  1 16:35:57 EDT 2025: mmshutdown: Starting force unmount of GPFS file systems
+Fri Aug  1 16:36:02 EDT 2025: mmshutdown: Shutting down GPFS daemons
+Fri Aug  1 16:36:19 EDT 2025: mmshutdown: Finished
+Fri Aug  1 16:36:19 EDT 2025: mmstartup: Starting GPFS ...
+-- Waiting for Cluster to become Active --
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+-- Mounting filesystem --
+Fri Aug  1 16:37:30 EDT 2025: mmmount: Mounting file systems ...
+-- Ready --
+ ! ccrEnabled 1
+ ! cipherList AUTHONLY
+ ! clusterId 7910609039694056090
+ ! clusterName h100test2.local
+ ! dmapiFileHandleSize 32
+ ! ignorePrefetchLUNCount 1
+ ! maxblocksize 16777216
+ ! maxFilesToCache 131072
+ ! maxMBpS 100000
+ ! maxStatCache 131072
+ ! minReleaseLevel 3600
+ ! myNodeConfigNumber 8
+ ! nsdRAIDClientOnlyChecksum 1
+ ! numaMemoryInterleave yes
+ ! pagepool 34359738368
+ ! sdrNotifyAuthEnabled yes
+ ! tscCmdAllowRemoteConnections no
+ ! verbsGPUDirectStorage 1
+ ! verbsPorts mlx5_5/1 mlx5_4/1 mlx5_3/1
+ ! verbsRdma 1
+ ! verbsRdmaCm enable
+ ! verbsRdmaSend 1
+ ! workerThreads 1024
+++ mpiexec --hosts gpfs-client-03,gpfs-client-02 -np 64 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+IOR-4.0.0: MPI Coordinated Test of Parallel I/O
+Began               : Fri Aug  1 16:37:33 2025
+Command line        : /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+Machine             : Linux gpfs-client-03.local
+TestID              : 0
+StartTime           : Fri Aug  1 16:37:33 2025
+Path                : /gpfs/remote_test02/test_ior.00000000
+FS                  : 808.7 TiB   Used FS: 0.5%   Inodes: 0.1 Mi   Used Inodes: 1.0%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /gpfs/remote_test02/test_ior
+access              : file-per-process
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : constant task offset
+task offset         : 1
+nodes               : 2
+tasks               : 64
+clients per node    : 32
+repetitions         : 10
+xfersize            : 16 MiB
+blocksize           : 24 GiB
+aggregate filesize  : 1.50 TiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     95161      5949       0.008499    25165824   16384      0.074284   16.52      3.76       16.53      0   
+read      143208     8954       0.006695    25165824   16384      0.059013   10.98      1.13       10.98      0   
+write     104609     6539       0.009241    25165824   16384      0.122470   15.03      2.02       15.04      1   
+read      138971     8687       0.006674    25165824   16384      0.097858   11.32      1.39       11.32      1   
+write     105751     6610       0.009021    25165824   16384      0.154501   14.87      1.72       14.87      2   
+read      142049     8882       0.006703    25165824   16384      0.113192   11.07      1.13       11.07      2   
+write     106880     6681       0.009355    25165824   16384      0.134779   14.71      1.78       14.72      3   
+read      141792     8866       0.006508    25165824   16384      0.107282   11.09      1.14       11.09      3   
+write     108227     6765       0.009345    25165824   16384      0.127131   14.53      1.31       14.53      4   
+read      142624     8918       0.006757    25165824   16384      0.118397   11.02      1.17       11.03      4   
+write     105665     6605       0.009306    25165824   16384      0.110259   14.88      1.95       14.89      5   
+read      142267     8895       0.006666    25165824   16384      0.110000   11.05      1.30       11.06      5   
+write     107658     6730       0.008792    25165824   16384      0.162601   14.61      1.50       14.61      6   
+read      142129     8888       0.006687    25165824   16384      0.103773   11.06      1.24       11.07      6   
+write     107366     6711       0.009231    25165824   16384      0.142163   14.65      1.61       14.65      7   
+read      142328     8900       0.006655    25165824   16384      0.078099   11.05      1.48       11.05      7   
+write     106428     6653       0.008939    25165824   16384      0.142463   14.78      2.35       14.78      8   
+read      142403     8904       0.006730    25165824   16384      0.081751   11.04      1.11       11.05      8   
+write     104683     6543       0.009133    25165824   16384      0.144026   15.02      2.08       15.03      9   
+read      143572     8977       0.006943    25165824   16384      0.085857   10.95      0.776135   10.96      9   
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write      108227.01   95160.69  105242.75    3551.52    6764.19    5947.54    6577.67     221.97   14.96351         NA            NA     0     64  32   10   1     1        1         0    0      1 25769803776 16777216 1572864.0 POSIX      0
+read       143572.50  138970.54  142134.27    1171.42    8973.28    8685.66    8883.39      73.21   11.06681         NA            NA     0     64  32   10   1     1        1         0    0      1 25769803776 16777216 1572864.0 POSIX      0
+Finished            : Fri Aug  1 16:41:54 2025
+++ mpiexec --hosts gpfs-client-01,gpfs-client-03,gpfs-client-02 -np 96 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+IOR-4.0.0: MPI Coordinated Test of Parallel I/O
+Began               : Fri Aug  1 16:41:55 2025
+Command line        : /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+Machine             : Linux gpfs-client-01.local
+TestID              : 0
+StartTime           : Fri Aug  1 16:41:55 2025
+Path                : /gpfs/remote_test02/test_ior.00000000
+FS                  : 808.7 TiB   Used FS: 0.7%   Inodes: 0.1 Mi   Used Inodes: 1.1%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /gpfs/remote_test02/test_ior
+access              : file-per-process
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : constant task offset
+task offset         : 1
+nodes               : 3
+tasks               : 96
+clients per node    : 32
+repetitions         : 10
+xfersize            : 16 MiB
+blocksize           : 24 GiB
+aggregate filesize  : 2.25 TiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     126997     7938       0.011586    25165824   16384      0.094564   18.58      1.92       18.58      0   
+read      211938     13254      0.007097    25165824   16384      0.070373   11.13      1.09       11.13      0   
+write     128253     8017       0.010870    25165824   16384      6.02       18.39      4.18       18.40      1   
+read      212386     13280      0.007046    25165824   16384      0.147930   11.10      0.909706   11.11      1   
+write     126872     7930       0.011047    25165824   16384      2.71       18.59      2.35       18.60      2   
+read      212894     13310      0.007085    25165824   16384      0.092415   11.08      1.14       11.08      2   
+write     126125     7883       0.010973    25165824   16384      3.14       18.70      2.50       18.71      3   
+read      211303     13215      0.006603    25165824   16384      0.123336   11.16      1.00       11.17      3   
+write     126390     7900       0.010909    25165824   16384      2.33       18.66      2.40       18.67      4   
+read      214077     13386      0.007168    25165824   16384      0.087761   11.02      0.898524   11.02      4   
+write     126230     7890       0.011615    25165824   16384      1.57       18.69      1.80       18.69      5   
+read      213782     13367      0.006708    25165824   16384      0.031934   11.03      0.889847   11.04      5   
+write     128548     8035       0.011530    25165824   16384      1.05       18.35      1.70       18.35      6   
+read      210644     13171      0.006919    25165824   16384      0.157232   11.20      0.851667   11.20      6   
+write     127631     7978       0.011648    25165824   16384      0.639634   18.48      1.44       18.49      7   
+read      210163     13146      0.006870    25165824   16384      0.185910   11.22      1.05       11.23      7   
+write     126437     7903       0.011860    25165824   16384      0.877965   18.66      1.35       18.66      8   
+read      213618     13358      0.007052    25165824   16384      0.048910   11.04      1.06       11.04      8   
+write     127424     7965       0.011870    25165824   16384      0.856492   18.51      1.17       18.52      9   
+read      211777     13245      0.007102    25165824   16384      0.102776   11.13      1.12       11.14      9   
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write      128548.21  126124.80  127090.80     807.94    8034.26    7882.80    7943.17      50.50   18.56461         NA            NA     0     96  32   10   1     1        1         0    0      1 25769803776 16777216 2359296.0 POSIX      0
+read       214077.33  210162.54  212258.16    1270.78   13379.83   13135.16   13266.13      79.42   11.11562         NA            NA     0     96  32   10   1     1        1         0    0      1 25769803776 16777216 2359296.0 POSIX      0
+Finished            : Fri Aug  1 16:46:53 2025
+++ echo '------------ 4 NICS --------------'
+------------ 4 NICS --------------
+++ ./apply_setting_and_restart.sh 'mlx5_5/1 mlx5_4/1 mlx5_3/1 mlx5_2/1'
+-- Setting verbsPorts=mlx5_5/1 mlx5_4/1 mlx5_3/1 mlx5_2/1 --
+mmchconfig: Command successfully completed
+mmchconfig: Propagating the cluster configuration data to all
+  affected nodes.  This is an asynchronous process.
+Fri Aug  1 16:46:55 EDT 2025: mmshutdown: Starting force unmount of GPFS file systems
+Fri Aug  1 16:47:00 EDT 2025: mmshutdown: Shutting down GPFS daemons
+Fri Aug  1 16:47:10 EDT 2025: mmshutdown: Finished
+Fri Aug  1 16:47:10 EDT 2025: mmstartup: Starting GPFS ...
+-- Waiting for Cluster to become Active --
+.
+.
+-- Mounting filesystem --
+Fri Aug  1 16:47:23 EDT 2025: mmmount: Mounting file systems ...
+-- Ready --
+ ! ccrEnabled 1
+ ! cipherList AUTHONLY
+ ! clusterId 7910609039694056090
+ ! clusterName h100test2.local
+ ! dmapiFileHandleSize 32
+ ! ignorePrefetchLUNCount 1
+ ! maxblocksize 16777216
+ ! maxFilesToCache 131072
+ ! maxMBpS 100000
+ ! maxStatCache 131072
+ ! minReleaseLevel 3600
+ ! myNodeConfigNumber 8
+ ! nsdRAIDClientOnlyChecksum 1
+ ! numaMemoryInterleave yes
+ ! pagepool 34359738368
+ ! sdrNotifyAuthEnabled yes
+ ! tscCmdAllowRemoteConnections no
+ ! verbsGPUDirectStorage 1
+ ! verbsPorts mlx5_5/1 mlx5_4/1 mlx5_3/1 mlx5_2/1
+ ! verbsRdma 1
+ ! verbsRdmaCm enable
+ ! verbsRdmaSend 1
+ ! workerThreads 1024
+++ mpiexec --hosts gpfs-client-03,gpfs-client-02 -np 64 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+IOR-4.0.0: MPI Coordinated Test of Parallel I/O
+Began               : Fri Aug  1 16:47:26 2025
+Command line        : /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+Machine             : Linux gpfs-client-03.local
+TestID              : 0
+StartTime           : Fri Aug  1 16:47:26 2025
+Path                : /gpfs/remote_test02/test_ior.00000000
+FS                  : 808.7 TiB   Used FS: 0.5%   Inodes: 0.1 Mi   Used Inodes: 1.0%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /gpfs/remote_test02/test_ior
+access              : file-per-process
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : constant task offset
+task offset         : 1
+nodes               : 2
+tasks               : 64
+clients per node    : 32
+repetitions         : 10
+xfersize            : 16 MiB
+blocksize           : 24 GiB
+aggregate filesize  : 1.50 TiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     109542     6848       0.009203    25165824   16384      0.072750   14.35      1.85       14.36      0   
+read      201025     12571      0.004527    25165824   16384      0.014125   7.82       0.864456   7.82       0   
+write     105107     6570       0.009598    25165824   16384      0.123155   14.96      2.30       14.96      1   
+read      196253     12271      0.005019    25165824   16384      0.119542   8.01       0.921692   8.01       1   
+write     104135     6509       0.009589    25165824   16384      0.157747   15.10      2.76       15.10      2   
+read      201272     12586      0.005042    25165824   16384      0.093576   7.81       0.577553   7.81       2   
+write     104319     6521       0.008876    25165824   16384      0.088417   15.08      3.09       15.08      3   
+read      200842     12559      0.004759    25165824   16384      0.079187   7.83       0.516667   7.83       3   
+write     106836     6678       0.009398    25165824   16384      0.140880   14.72      3.38       14.72      4   
+read      200731     12553      0.005002    25165824   16384      0.034912   7.83       0.618016   7.84       4   
+write     106450     6654       0.009508    25165824   16384      0.151758   14.77      2.25       14.78      5   
+read      193319     12089      0.004878    25165824   16384      0.070898   8.13       0.732710   8.14       5   
+write     105241     6579       0.009570    25165824   16384      0.157345   14.94      2.90       14.95      6   
+read      203499     12726      0.004907    25165824   16384      0.062674   7.72       0.262136   7.73       6   
+write     104428     6528       0.009615    25165824   16384      0.140855   15.06      2.97       15.06      7   
+read      201573     12606      0.004822    25165824   16384      0.105382   7.80       0.504568   7.80       7   
+write     103961     6499       0.009727    25165824   16384      0.115119   15.13      4.09       15.13      8   
+read      202729     12678      0.004946    25165824   16384      0.096508   7.75       0.382400   7.76       8   
+write     107092     6694       0.009530    25165824   16384      0.136154   14.69      2.17       14.69      9   
+read      202778     12683      0.004948    25165824   16384      0.104542   7.75       0.532292   7.76       9   
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write      109541.54  103961.08  105711.08    1676.55    6846.35    6497.57    6606.94     104.78   14.88258         NA            NA     0     64  32   10   1     1        1         0    0      1 25769803776 16777216 1572864.0 POSIX      0
+read       203499.27  193319.21  200402.17    3014.09   12718.70   12082.45   12525.14     188.38    7.85035         NA            NA     0     64  32   10   1     1        1         0    0      1 25769803776 16777216 1572864.0 POSIX      0
+Finished            : Fri Aug  1 16:51:15 2025
+++ mpiexec --hosts gpfs-client-01,gpfs-client-03,gpfs-client-02 -np 96 /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+IOR-4.0.0: MPI Coordinated Test of Parallel I/O
+Began               : Fri Aug  1 16:51:15 2025
+Command line        : /usr/local/bin/ior -a POSIX -b 24G -t 16M -o /gpfs/remote_test02/test_ior -w -r -C -F -i 10
+Machine             : Linux gpfs-client-01.local
+TestID              : 0
+StartTime           : Fri Aug  1 16:51:15 2025
+Path                : /gpfs/remote_test02/test_ior.00000000
+FS                  : 808.7 TiB   Used FS: 0.7%   Inodes: 0.1 Mi   Used Inodes: 1.1%
+
+Options: 
+api                 : POSIX
+apiVersion          : 
+test filename       : /gpfs/remote_test02/test_ior
+access              : file-per-process
+type                : independent
+segments            : 1
+ordering in a file  : sequential
+ordering inter file : constant task offset
+task offset         : 1
+nodes               : 3
+tasks               : 96
+clients per node    : 32
+repetitions         : 10
+xfersize            : 16 MiB
+blocksize           : 24 GiB
+aggregate filesize  : 2.25 TiB
+
+Results: 
+
+access    bw(MiB/s)  IOPS       Latency(s)  block(KiB) xfer(KiB)  open(s)    wr/rd(s)   close(s)   total(s)   iter
+------    ---------  ----       ----------  ---------- ---------  --------   --------   --------   --------   ----
+write     128590     8038       0.011317    25165824   16384      0.107625   18.34      1.75       18.35      0   
+read      215127     13451      0.006940    25165824   16384      0.035772   10.96      0.726743   10.97      0   
+write     125413     7839       0.010944    25165824   16384      8.09       18.81      6.38       18.81      1   
+read      216048     13505      0.006957    25165824   16384      0.142020   10.92      0.529878   10.92      1   
+write     127062     7942       0.011569    25165824   16384      1.95       18.57      2.41       18.57      2   
+read      215081     13450      0.007032    25165824   16384      0.037534   10.96      0.850943   10.97      2   
+write     128184     8012       0.011781    25165824   16384      3.01       18.40      1.69       18.41      3   
+read      213675     13361      0.007086    25165824   16384      0.220270   11.04      0.682646   11.04      3   
+write     127853     7992       0.011532    25165824   16384      2.33       18.45      2.34       18.45      4   
+read      216731     13552      0.007031    25165824   16384      0.086199   10.88      0.412256   10.89      4   
+write     126194     7888       0.011321    25165824   16384      1.76       18.69      2.15       18.70      5   
+read      212143     13265      0.006778    25165824   16384      0.095928   11.12      1.09       11.12      5   
+write     128599     8039       0.011841    25165824   16384      0.464638   18.34      1.38       18.35      6   
+read      211685     13237      0.006816    25165824   16384      0.099987   11.14      1.69       11.15      6   
+write     127596     7976       0.011592    25165824   16384      0.154727   18.49      1.38       18.49      7   
+read      212372     13279      0.006870    25165824   16384      0.048693   11.10      0.800147   11.11      7   
+write     129049     8067       0.011779    25165824   16384      0.188547   18.28      1.20       18.28      8   
+read      215809     13494      0.007050    25165824   16384      0.059817   10.93      0.415264   10.93      8   
+write     129365     8086       0.011633    25165824   16384      0.996750   18.23      1.60       18.24      9   
+read      212549     13291      0.006857    25165824   16384      0.021421   11.09      1.01       11.10      9   
+
+Summary of all tests:
+Operation   Max(MiB)   Min(MiB)  Mean(MiB)     StdDev   Max(OPs)   Min(OPs)  Mean(OPs)     StdDev    Mean(s) Stonewall(s) Stonewall(MiB) Test# #Tasks tPN reps fPP reord reordoff reordrand seed segcnt   blksiz    xsize aggs(MiB)   API RefNum
+write      129365.38  125412.85  127790.39    1195.15    8085.34    7838.30    7986.90      74.70   18.46386         NA            NA     0     96  32   10   1     1        1         0    0      1 25769803776 16777216 2359296.0 POSIX      0
+read       216731.00  211684.69  214122.00    1757.33   13545.69   13230.29   13382.63     109.83   11.01921         NA            NA     0     96  32   10   1     1        1         0    0      1 25769803776 16777216 2359296.0 POSIX      0
+Finished            : Fri Aug  1 16:56:11 2025
+]0;root@gpfs-client-01:~[?2004h[root@gpfs-client-01 ~]# exit
+[?2004lexit
+
+Script done on 2025-08-01 16:59:05-04:00 [COMMAND_EXIT_CODE="0"]
