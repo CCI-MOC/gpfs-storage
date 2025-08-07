@@ -74,6 +74,8 @@ mmaddnode -N <node2>,<node3>
 mmchnode --manager --quorum -N <node2>,<node3>
 ```
 
+To remove a `--manager` designation do `--client` and to remove a `--quorum` designation do `--nonquorum`.
+
 #### Adding remote cluster filesystem to created cluster
 After the cluster has been created, we can add the remote cluster filesystem to this cluster.
 
