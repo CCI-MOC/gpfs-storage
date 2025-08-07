@@ -1,8 +1,14 @@
-export TARGET_PATH="/gpfs/remote_test02/fio_target"
-mkdir -p $TARGET_PATH
-
-export BENCHMARKS="fio"
-export FIO_CAPACITY_MB="100000"
-export FIO_RUNTIME="60" # in seconds
-export ITERATIONS="4"
-./fs-performance-container/entry.sh
+fio \
+    --filesize=100G \
+    --runtime=30s \
+    --filename="/gpfs/remote_test02/test_fio"  \
+    --ioengine=libaio \
+    --direct=1 \
+    --time_based \
+    --stonewall  \
+    --iodepth=32 \
+    --bs=16m \
+    --rw=read \
+    --name=sw16m@qd32  \
+    --numjobs=64 \
+    --group_reporting
