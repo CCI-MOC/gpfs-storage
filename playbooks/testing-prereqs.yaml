@@ -1,0 +1,39 @@
+---
+- hosts: h100_storage_compute
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: Install fio
+    package: name=fio state=present
+
+  - name: Install time
+    package: name=time state=present
+
+  - name: Create testing-fio directory
+    file:
+      path: /home/root/testing-fio/
+      state: directory
+
+  - name: Copy script
+    template:
+      src: files/run_fio.sh
+      dest: /root/testing-fio/run_fio.sh
+      mode: u+rwx
+
+  - name: Clone IOR
+    unarchive:
+      src: files/ior-4.0.0.tar.gz
+      dest: /root/
+
+  - name: Copy `apply_setting_and_restart.sh`
+    template:
+      src: files/apply_setting_and_restart.sh
+      dest: /root/apply_setting_and_restart.sh
+      mode: u+rwx
+
+  - name: Copy `variable_nic_benchmarks.sh`
+    template:
+      src: files/variable_nic_benchmarks.sh
+      dest: /root/variable_nic_benchmarks.sh
+      mode: u+rwx
