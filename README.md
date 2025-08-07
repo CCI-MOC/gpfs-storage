@@ -6,6 +6,7 @@ the MOC.
 ## Setup
 - [Architecture](docs/architecture.md)
 - [Installing on Bare Metal](docs/installing-on-baremetal.md)
+- [BIOS](docs/bios.md)
 - [RoCE](docs/roce.md)
 - [Filesets](docs/filesets.md)
 - [Configuring Cluster Exports](docs/configuring-cluster-exports.md)
