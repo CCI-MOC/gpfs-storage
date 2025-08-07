@@ -12,4 +12,5 @@ the MOC.
 - [Configuring Cluster Exports](docs/configuring-cluster-exports.md)
 
 ## Benchmarking
-- [IOR](docs/benchmarking-file.md)
+- [Bare Metal](docs/benchmarking-file.md)
+- [OpenShift](results/ocp-dublin/README.md)
